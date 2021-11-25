@@ -35,8 +35,13 @@ iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 sh -c "iptables-save > /etc/iptables.ipv4.nat"
 iptables-restore < /etc/iptables.ipv4.nat
 
+
 brctl addbr br0
 brctl addif br0 eth0
+brctl addif br0 eth2
 echo "auto br0" >> /etc/network/interfaces
 echo "iface br0 inet manual" >> /etc/network/interfaces
 echo "bridge_ports eth0 eth2" >> /etc/network/interfaces
+ifconfig eth0 up
+ifconfig eth2 up
+ifconfig br0 up
