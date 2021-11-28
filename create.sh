@@ -1,19 +1,19 @@
 #!/bin/bash
 
-echo "interface eth2" >> /etc/dhcpcd.conf
-echo "static ip_address=192.168.1.20/24" >> /etc/dhcpcd.conf
+echo "interface wlan0" >> /etc/dhcpcd.conf
+echo "static ip_address=192.168.1.21/24" >> /etc/dhcpcd.conf
 echo "denyinterfaces eth0" >> /etc/dhcpcd.conf
-echo "denyinterfaces eth2" >> /etc/dhcpcd.conf
+echo "denyinterfaces wlan0" >> /etc/dhcpcd.conf
 
 mv /etc/dnsmasq.conf /etc/dnsmasq.conf.orig
-echo "interface=eth2" > /etc/dnsmasq.conf
+echo "interface=wlan0" > /etc/dnsmasq.conf
 echo "    dhcp-range=192.168.1.21,192.168.1.50,255.255.255.0,24h" >> /etc/dnsmasq.conf
 
 FILE=/etc/hostapd/hostapd.conf
 if test -f "$FILE"; then
 	mv /etc/hostapd/hostapd.conf /etc/hostapd/hostapd.conf.orig
 fi
-echo "interface=eth2" > /etc/hostapd/hostapd.conf
+echo "interface=wlan0" > /etc/hostapd/hostapd.conf
 echo bridge=br0 >> /etc/hostapd/hostapd.conf
 echo hw_mode=g >> /etc/hostapd/hostapd.conf
 echo channel=7 >> /etc/hostapd/hostapd.conf
@@ -38,10 +38,10 @@ iptables-restore < /etc/iptables.ipv4.nat
 
 brctl addbr br0
 brctl addif br0 eth0
-brctl addif br0 eth2
+brctl addif br0 wlan0
 echo "auto br0" >> /etc/network/interfaces
 echo "iface br0 inet manual" >> /etc/network/interfaces
-echo "bridge_ports eth0 eth2" >> /etc/network/interfaces
+echo "bridge_ports eth0 wlan0" >> /etc/network/interfaces
 ifconfig eth0 up
-ifconfig eth2 up
+ifconfig wlan0 up
 ifconfig br0 up
